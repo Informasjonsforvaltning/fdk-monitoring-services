@@ -1,7 +1,7 @@
 version: '3'
 services:
- api:
-   image: informasjonsforvaltning/example-api:lates
+  api:
+   image: informasjonsforvaltning/example-api:latest
    ports:
     - "8080:8080"
   influxdb:
@@ -14,8 +14,6 @@ services:
     image: "telegraf:latest"
     volumes:
       - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
-    ports:
-      - "8125:8125"
     depends_on:
       - influxdb
   grafana:
