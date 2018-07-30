@@ -1,1 +1,2 @@
 - [ ] Test altnernative TICK-stack, cf https://www.influxdata.com/time-series-platform/
+- [ ] Add instance availability monitoring by eg. prometheus, cf https://prometheus.io/docs/concepts/jobs_instances/
