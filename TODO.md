@@ -1,1 +1,1 @@
-- [] Test altnernative TICK-stack, cf https://www.influxdata.com/time-series-platform/
+- [ ] Test altnernative TICK-stack, cf https://www.influxdata.com/time-series-platform/
