@@ -1,2 +1,3 @@
 - [x] Test altnernative TICK-stack, cf https://www.influxdata.com/time-series-platform/
 - [ ] Add instance availability monitoring to TIG-stack by eg. prometheus, cf https://prometheus.io/docs/concepts/jobs_instances/
+- [ ] Add precanned dashboard for e.g. ping by using Telegraf input plugin for ping
