@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: telegraf-operator
+  namespace: telegraf-operator
+  labels:
+    app: telegraf-operator
+spec:
+  ports:
+    - port: 443
+      targetPort: 9443
+      protocol: TCP
+      name: https
+  selector:
+    app: telegraf-operator

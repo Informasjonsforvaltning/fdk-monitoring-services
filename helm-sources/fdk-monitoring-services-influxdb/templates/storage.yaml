@@ -1,0 +1,33 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  creationTimestamp: null
+  labels:
+    app: fdk-monitoring-services-influxdb
+  name: fdk-monitoring-services-influxdb-claim0
+  namespace: {{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
+spec:
+  storageClassName: ""
+  volumeName: {{ required "Missing value INFLUXDB_VOLUMENAME" .Values.INFLUXDB_VOLUMENAME }}
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ required "Missing value INFLUXDB_STORAGESIZE" .Values.INFLUXDB_STORAGESIZE | quote }}
+status: {}
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ required "Missing value INFLUXDB_VOLUMENAME" .Values.INFLUXDB_VOLUMENAME }}
+  namespace: {{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
+spec:
+  storageClassName: ""
+  capacity:
+    storage: {{ required "Missing value INFLUXDB_STORAGESIZE" .Values.INFLUXDB_STORAGESIZE | quote }}
+  accessModes:
+    - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: {{ required "Missing value INFLUXDB_VOLUMENAME" .Values.INFLUXDB_VOLUMENAME }}
+    fsType: ext4
