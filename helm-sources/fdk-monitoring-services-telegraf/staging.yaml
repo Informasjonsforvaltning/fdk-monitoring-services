@@ -1,0 +1,6 @@
+#namespace
+NAMESPACE: staging
+
+#telegraf
+TELEGRAF_IMAGE_NAME: telegraf:1.19.0
+TELEGRAF_MEMORY: "100Mi"

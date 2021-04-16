@@ -1,0 +1,8 @@
+#namespace
+NAMESPACE: staging
+
+#influxdb
+INFLUXDB_IMAGE_NAME: influxdb:1.8.6
+INFLUXDB_MEMORY: "100Mi"
+INFLUXDB_VOLUMENAME: fdk-dev-staging-influxdb
+INFLUXDB_STORAGESIZE: "9G"

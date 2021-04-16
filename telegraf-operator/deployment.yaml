@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telegraf-operator
+  namespace: telegraf-operator
+  labels:
+    app: telegraf-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telegraf-operator
+  template:
+    metadata:
+      labels:
+        app: telegraf-operator
+    spec:
+      serviceAccountName: telegraf-operator
+      containers:
+        - name: controller
+          image: quay.io/influxdb/telegraf-operator:latest
+          # use IfNotPresent image pull policy to allow pushing / injecting
+          # container images to Kubernetes directly (such as when using kind)
+          imagePullPolicy: IfNotPresent
+          args:
+            # for development purposes, enable internal plugin to report
+            # telegraf metrics even if no other data is available
+            - --enable-default-internal-plugin=true
+            # default class to use if not specified by the pod
+            - --telegraf-default-class=basic
+            - --telegraf-classes-directory=/config/classes
+            # allow injecting telegraf-istio sidecar for pods with
+            # istio sidecar annotations enabled
+            - --enable-istio-injection=true
+            # if telegraf image supports it (as of version 1.19.2), telegraf-watch-config can be
+            # set to enable telegraf-opeator and telegraf hot reloading changes to classes secret
+            - --telegraf-watch-config=inotify
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - name: https
+              containerPort: 9443
+              protocol: TCP
+          volumeMounts:
+            - name: certs
+              readOnly: true
+              mountPath: "/etc/certs"
+            - name: telegraf-operator-classes
+              readOnly: true
+              mountPath: "/config/classes"
+      volumes:
+        - name: certs
+          secret:
+            secretName: telegraf-operator-certs
+        - name: telegraf-operator-classes
+          secret:
+            secretName: telegraf-operator-classes

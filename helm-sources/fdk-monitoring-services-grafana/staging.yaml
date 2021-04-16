@@ -1,0 +1,8 @@
+#namespace
+NAMESPACE: staging
+
+#grafana
+GRAFANA_IMAGE_NAME: grafana/grafana:7.5.9
+GRAFANA_MEMORY: "100Mi"
+GRAFANA_VOLUMENAME: fdk-dev-staging-grafana
+GRAFANA_STORAGESIZE: "9G"

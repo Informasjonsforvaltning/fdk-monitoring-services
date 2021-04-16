@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: fdk-monitoring-services-telegraf
+  name: fdk-monitoring-services-telegraf
+  namespace: {{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fdk-monitoring-services-telegraf
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: fdk-monitoring-services-telegraf
+    spec:
+      containers:
+        - env:
+          - name: HOST_NAME
+            value: "fdk-monitoring-services-telegraf"
+          - name: INFLUXDB_HOST
+            value: "fdk-monitoring-services-influxdb"
+          - name: INFLUXDB_PORT
+            value: "8086"
+          - name: DATABASE
+            value: "fdk"
+          name: fdk-monitoring-services-telegraf
+          image: {{ required "Missing value TELEGRAF_IMAGE_NAME" .Values.TELEGRAF_IMAGE_NAME }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8125
+              protocol: UDP
+          resources:
+            requests:
+              memory: {{ required "Missing value TELEGRAF_MEMORY" .Values.TELEGRAF_MEMORY | quote }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/telegraf
+      restartPolicy: Always
+      volumes:
+        - name: config-volume
+          configMap:
+            name: fdk-monitoring-services-telegraf
+status: {}
