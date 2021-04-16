@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  creationTimestamp: null
+  labels:
+    app: fdk-monitoring-services-influxdb
+  name: fdk-monitoring-services-influxdb
+  namespace: {{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
+spec:
+  type: NodePort
+  ports:
+  - name: "8086"
+    port: 8086
+    targetPort: 8086
+  selector:
+    app: fdk-monitoring-services-influxdb
+status:
+  loadBalancer: {}

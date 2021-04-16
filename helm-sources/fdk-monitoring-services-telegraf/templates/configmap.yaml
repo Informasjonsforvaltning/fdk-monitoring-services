@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fdk-monitoring-services-telegraf
+  labels:
+    app: fdk-monitoring-services-telegraf
+  namespace: {{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
+data:
+  telegraf.conf: |+
+    [agent]
+      flush_interval = "15s"
+      interval = "15s"
+      debug = true
+
+    # Statsd UDP/TCP Server
+    [[inputs.statsd]]
+      ## Protocol, must be "tcp", "udp", "udp4" or "udp6" (default=udp)
+      protocol = "udp"
+
+      ## MaxTCPConnection - applicable when protocol is set to tcp (default=250)
+      max_tcp_connections = 250
+
+      ## Address and port to host UDP listener on
+      service_address = ":8125"
+
+      ## The following configuration options control when telegraf clears it's cache
+      ## of previous values. If set to false, then telegraf will only clear it's
+      ## cache when the daemon is restarted.
+      ## Reset gauges every interval (default=true)
+      delete_gauges = true
+      ## Reset counters every interval (default=true)
+      delete_counters = true
+      ## Reset sets every interval (default=true)
+      delete_sets = true
+      ## Reset timings & histograms every interval (default=true)
+      delete_timings = true
+
+      ## Percentiles to calculate for timing & histogram stats
+      percentiles = [90.0]
+
+      ## separator to use between elements of a statsd metric
+      metric_separator = "_"
+
+      ## Parses tags in the datadog statsd format
+      ## http://docs.datadoghq.com/guides/dogstatsd/
+      parse_data_dog_tags = false
+      ## Number of UDP messages allowed to queue up, once filled,
+      ## the statsd server will start dropping packets
+      allowed_pending_messages = 10000
+
+      ## Number of timing/histogram values to track per-measurement in the
+      ## calculation of percentiles. Raising this limit increases the accuracy
+      ## of percentiles but also increases the memory usage and cpu time.
+      percentile_limit = 1000
+
+    [[inputs.elasticsearch]]
+      servers = [ "http://elasticsearch7:9200" ]
+      http_timeout = "5s"
+      local = true
+      cluster_health = false
+      cluster_stats = false
+      cluster_stats_only_from_master = true
+      indices_include = [ "_all" ]
+      indices_level = "shards"
+
+    [[outputs.influxdb]]
+      database = "telegraf"
+      retention_policy = "365_days"
+      urls = [ "http://fdk-monitoring-services-influxdb:8086" ]
+      username = {{ required "Missing value INFLUXDB_ADMIN_USER" .Values.INFLUXDB_ADMIN_USER | quote }}
+      password = {{ required "Missing value INFLUXDB_ADMIN_PASSWORD" .Values.INFLUXDB_ADMIN_PASSWORD | quote }}

@@ -1,0 +1,83 @@
+name: Deploy to production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy-telegraf-operator:
+    name: Install telegraf-operator
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup gcloud CLI for deploy
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_email: ${{ secrets.GCP_SA_DIGDIR_FDK_GCR_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_DIGDIR_FDK_GCR_KEY }}
+
+      - name: Install telegraf operator
+        run: |
+          gcloud container clusters get-credentials digdir-fdk-dev --region europe-north1-a --project digdir-fdk-dev
+          kubectl apply -f ./telegraf-operator/namespace.yaml --force
+          kubectl apply -f ./telegraf-operator/webhook.yaml --force
+          kubectl apply -f ./telegraf-operator/secret.yaml --force
+          kubectl apply -f ./telegraf-operator/deployment.yaml --force
+          kubectl apply -f ./telegraf-operator/service.yaml --force
+
+  deploy-monitoring-services:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [ fdk-monitoring-services-telegraf, fdk-monitoring-services-influxdb, fdk-monitoring-services-grafana ]
+
+    name: Build and deploy to prod environment
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Apply Helm template ${{ matrix.app }}
+        run: |
+          helm template \
+          --set INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }} \
+          --set INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD }} \
+          -f ./helm-sources/${{ matrix.app }}/prod.yaml \
+          ./helm-sources/${{ matrix.app }}/ > ./kubectlapply-${{ matrix.app }}.yaml
+          chmod o+w ./kubectlapply-${{ matrix.app }}.yaml
+          cat kubectlapply-${{ matrix.app }}.yaml
+      - name: Setup gcloud CLI for deploy
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_email: ${{ secrets.GCP_SA_DIGDIR_FDK_GCR_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_DIGDIR_FDK_GCR_KEY }}
+
+      - name: Deploy to GCP
+        run: |
+          gcloud container clusters get-credentials digdir-fdk-prod --region europe-north1-a --project digdir-fdk-prod
+          kubectl apply -f ./kubectlapply-${{ matrix.app }}.yaml --force
+          kubectl --namespace=prod rollout restart deployment ${{ matrix.app }}
+
+          if ! kubectl --namespace=prod rollout status deployment ${{ matrix.app }}; then
+            kubectl --namespace=prod rollout undo deployment ${{ matrix.app }}
+            kubectl --namespace=prod rollout status deployment ${{ matrix.app }}
+            exit 1
+          fi
+
+      - name: Notify slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          author_name: 'Application: (T)elegraf,(I)nfluxdb,(G)rafana | Environment: prod'
+          fields: commit,author,workflow,message
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()

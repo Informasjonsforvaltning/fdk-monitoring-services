@@ -1,0 +1,8 @@
+#namespace
+NAMESPACE: prod
+
+#influxdb
+INFLUXDB_IMAGE_NAME: influxdb:1.8.6
+INFLUXDB_MEMORY: "100Mi"
+INFLUXDB_VOLUMENAME: fdk-prod-influxdb
+INFLUXDB_STORAGESIZE: "9G"

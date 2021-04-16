@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: fdk-monitoring-services-grafana
+  name: fdk-monitoring-services-grafana
+  namespace: {{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fdk-monitoring-services-grafana
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: fdk-monitoring-services-grafana
+    spec:
+      securityContext:
+        runAsUser: 472
+        runAsGroup: 472
+        fsGroup: 472
+      containers:
+        - env:
+          - name: GF_SECURITY_ADMIN_USER
+            valueFrom:
+              secretKeyRef:
+                name: fdk-monitoring-services-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
+                key: GF_SECURITY_ADMIN_USER
+          - name: GF_SECURITY_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: fdk-monitoring-services-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
+                key: GF_SECURITY_ADMIN_PASSWORD
+
+          name: fdk-monitoring-services-grafana
+          image: {{ required "Missing value GRAFANA_IMAGE_NAME" .Values.GRAFANA_IMAGE_NAME }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: {{ required "Missing value GRAFANA_MEMORY" .Values.GRAFANA_MEMORY | quote }}
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 3000
+            initialDelaySeconds: 150
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 5
+          volumeMounts:
+            - mountPath: /var/lib/grafana
+              name: fdk-monitoring-services-grafana-claim0
+            - mountPath: /etc/grafana/grafana.ini
+              name: config
+              subPath: grafana.ini
+      restartPolicy: Always
+      volumes:
+        - name: fdk-monitoring-services-grafana-claim0
+          persistentVolumeClaim:
+            claimName: fdk-monitoring-services-grafana-claim0
+        - name: config
+          configMap:
+            name: fdk-monitoring-services-grafana
+status: {}
