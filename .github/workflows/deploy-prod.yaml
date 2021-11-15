@@ -21,14 +21,19 @@ jobs:
           service_account_key: ${{ secrets.DIGDIR_FDK_PROD_AUTODEPLOY }}
           export_default_credentials: true
 
-      - name: Install telegraf operator
+      - name: Apply Helm template telegraf-operator
+        run: |
+          helm template \
+          --set INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }} \
+          --set INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD }} \
+          ./helm-sources/telegraf-operator/ > ./kubectlapply-telegraf-operator.yaml
+          chmod o+w ./kubectlapply-telegraf-operator.yaml
+          cat kubectlapply-telegraf-operator.yaml
+
+      - name: Deploy telegraf operator
         run: |
           gcloud container clusters get-credentials digdir-fdk-prod --region europe-north1-a --project digdir-fdk-prod
-          kubectl apply -f ./telegraf-operator/namespace.yaml --force
-          kubectl apply -f ./telegraf-operator/webhook.yaml --force
-          kubectl apply -f ./telegraf-operator/secret.yaml --force
-          kubectl apply -f ./telegraf-operator/deployment.yaml --force
-          kubectl apply -f ./telegraf-operator/service.yaml --force
+          kubectl apply -f ./kubectlapply-telegraf-operator.yaml --force
 
   deploy-monitoring-services:
 
@@ -53,6 +58,7 @@ jobs:
           ./helm-sources/${{ matrix.app }}/ > ./kubectlapply-${{ matrix.app }}.yaml
           chmod o+w ./kubectlapply-${{ matrix.app }}.yaml
           cat kubectlapply-${{ matrix.app }}.yaml
+
       - name: Setup gcloud CLI for deploy
         uses: google-github-actions/setup-gcloud@master
         with:
