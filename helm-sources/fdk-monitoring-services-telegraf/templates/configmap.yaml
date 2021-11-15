@@ -10,7 +10,7 @@ data:
     [agent]
       flush_interval = "15s"
       interval = "15s"
-      debug = true
+      debug = false
 
     # Statsd UDP/TCP Server
     [[inputs.statsd]]
