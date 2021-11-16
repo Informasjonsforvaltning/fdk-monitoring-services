@@ -25,7 +25,7 @@ jobs:
         run: |
           helm template \
           --set INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }} \
-          --set INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD }} \
+          --set INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD_PROD }} \
           ./helm-sources/telegraf-operator/ > ./kubectlapply-telegraf-operator.yaml
           chmod o+w ./kubectlapply-telegraf-operator.yaml
           cat kubectlapply-telegraf-operator.yaml
@@ -53,7 +53,7 @@ jobs:
         run: |
           helm template \
           --set INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }} \
-          --set INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD }} \
+          --set INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD_PROD }} \
           -f ./helm-sources/${{ matrix.app }}/prod.yaml \
           ./helm-sources/${{ matrix.app }}/ > ./kubectlapply-${{ matrix.app }}.yaml
           chmod o+w ./kubectlapply-${{ matrix.app }}.yaml
