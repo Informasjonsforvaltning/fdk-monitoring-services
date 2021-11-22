@@ -450,7 +450,7 @@ data:
     [auth.azuread]
     name = Azure AD
     enabled = true
-    allow_sign_up = false
+    allow_sign_up = true
     ;client_id = APPLICATION_ID
     ;client_secret = CLIENT_SECRET
     scopes = openid email profile
