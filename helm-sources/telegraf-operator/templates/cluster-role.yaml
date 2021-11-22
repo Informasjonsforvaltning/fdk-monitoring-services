@@ -3,7 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: telegraf-operator
   labels:
-    app: telegraf-operator
+    fdk.service: telegraf-operator
 rules:
   - apiGroups: [""]
     resources: ["secrets"]

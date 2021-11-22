@@ -4,7 +4,7 @@ metadata:
   name: telegraf-operator
   namespace: telegraf-operator
   labels:
-    app: telegraf-operator
+    fdk.service: telegraf-operator
 webhooks:
   - name: telegraf.influxdata.com
     # enable the example below to limit to namespaces with specific labels only

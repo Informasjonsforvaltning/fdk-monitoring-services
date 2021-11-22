@@ -4,16 +4,16 @@ metadata:
   name: telegraf-operator
   namespace: telegraf-operator
   labels:
-    app: telegraf-operator
+    fdk.service: telegraf-operator
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: telegraf-operator
+      fdk.service: telegraf-operator
   template:
     metadata:
       labels:
-        app: telegraf-operator
+        fdk.service: telegraf-operator
     spec:
       serviceAccountName: telegraf-operator
       containers:
@@ -27,7 +27,7 @@ spec:
             # telegraf metrics even if no other data is available
             - --enable-default-internal-plugin=true
             # default class to use if not specified by the pod
-            - --telegraf-default-class=basic
+            - --telegraf-default-class=fdk.service
             - --telegraf-classes-directory=/config/classes
             # allow injecting telegraf-istio sidecar for pods with
             # istio sidecar annotations enabled
