@@ -3,7 +3,7 @@ kind: ClusterRoleBinding
 metadata:
   name: telegraf-operator
   labels:
-    app: telegraf-operator
+    fdk.service: telegraf-operator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
