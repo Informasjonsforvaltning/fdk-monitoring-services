@@ -2,5 +2,5 @@
 NAMESPACE: prod
 
 #telegraf
-TELEGRAF_IMAGE_NAME: telegraf:1.19.0
+TELEGRAF_IMAGE_NAME: telegraf:1.20.4
 TELEGRAF_MEMORY: "100Mi"
