@@ -35,7 +35,16 @@ spec:
               secretKeyRef:
                 name: fdk-monitoring-services-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
                 key: GF_SECURITY_ADMIN_PASSWORD
-
+          - name: GF_AUTH_AZUREAD_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: fdk-monitoring-services-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
+                key: GF_AUTH_AZUREAD_CLIENT_ID
+          - name: GF_AUTH_AZUREAD_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: fdk-monitoring-services-{{ required "Missing value NAMESPACE" .Values.NAMESPACE }}
+                key: GF_AUTH_AZUREAD_CLIENT_SECRET
           name: fdk-monitoring-services-grafana
           image: {{ required "Missing value GRAFANA_IMAGE_NAME" .Values.GRAFANA_IMAGE_NAME }}
           imagePullPolicy: Always
