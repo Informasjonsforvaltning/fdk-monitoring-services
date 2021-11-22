@@ -448,13 +448,13 @@ data:
     #################################### Azure AD OAuth #######################
     [auth.azuread]
     name = Azure AD
-    enabled = false
+    enabled = true
     allow_sign_up = false
     #client_id = APPLICATION_ID
     #client_secret = CLIENT_SECRET
     scopes = openid email profile
-    auth_url = https://login.microsoftonline.com/TENANT_ID/oauth2/v2.0/authorize
-    token_url = https://login.microsoftonline.com/TENANT_ID/oauth2/v2.0/token
+    auth_url = https://login.microsoftonline.com/{{ required "Missing value GF_AUTH_AZUREAD_TENANT_ID" .Values.GF_AUTH_AZUREAD_TENANT_ID }}/oauth2/v2.0/authorize
+    token_url = https://login.microsoftonline.com/{{ required "Missing value GF_AUTH_AZUREAD_TENANT_ID" .Values.GF_AUTH_AZUREAD_TENANT_ID }}/oauth2/v2.0/token
     allowed_domains =
     allowed_groups =
 

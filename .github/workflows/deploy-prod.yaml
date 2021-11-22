@@ -54,6 +54,7 @@ jobs:
           helm template \
           --set INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }} \
           --set INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD_PROD }} \
+          --set GF_AUTH_AZUREAD_TENANT_ID=${{ secrets.GF_AUTH_AZUREAD_TENANT_ID }} \
           -f ./helm-sources/${{ matrix.app }}/prod.yaml \
           ./helm-sources/${{ matrix.app }}/ > ./kubectlapply-${{ matrix.app }}.yaml
           chmod o+w ./kubectlapply-${{ matrix.app }}.yaml
