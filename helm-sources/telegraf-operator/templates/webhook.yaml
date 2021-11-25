@@ -7,8 +7,7 @@ metadata:
     fdk.service: telegraf-operator
 webhooks:
   - name: telegraf.influxdata.com
-    # enable the example below to limit to namespaces with specific labels only
-    namespaceSelector:
+    objectSelector:
       matchLabels:
         controller: telegraf-operator
     admissionReviewVersions: ["v1"]
