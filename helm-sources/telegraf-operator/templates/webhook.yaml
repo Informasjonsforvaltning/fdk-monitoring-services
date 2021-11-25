@@ -8,9 +8,9 @@ metadata:
 webhooks:
   - name: telegraf.influxdata.com
     # enable the example below to limit to namespaces with specific labels only
-    # namespaceSelector:
-    #   matchLabels:
-    #     controller: telegraf-operator
+    namespaceSelector:
+      matchLabels:
+        controller: telegraf-operator
     admissionReviewVersions: ["v1"]
     sideEffects: None
     clientConfig:
