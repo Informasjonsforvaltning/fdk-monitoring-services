@@ -26,6 +26,9 @@ jobs:
           helm template \
           --set INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }} \
           --set INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD_PROD }} \
+          --set TELEGRAF_OPERATOR_CA_BUNDLE=${{ secrets.TELEGRAF_OPERATOR_CA_BUNDLE }} \
+          --set TELEGRAF_OPERATOR_TLS_CRT=${{ secrets.TELEGRAF_OPERATOR_TLS_CRT }} \
+          --set TELEGRAF_OPERATOR_TLS_KEY=${{ secrets.TELEGRAF_OPERATOR_TLS_KEY }} \
           ./helm-sources/telegraf-operator/ > ./kubectlapply-telegraf-operator.yaml
           chmod o+w ./kubectlapply-telegraf-operator.yaml
           cat kubectlapply-telegraf-operator.yaml
