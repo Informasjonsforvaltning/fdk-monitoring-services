@@ -1,13 +1,10 @@
 name: Deploy to staging
 
 on:
-  push:
+  pull_request:
+    types: [ready_for_review, opened, reopened, synchronize]
     branches:
-      - THIS_WORKFLOW_HAS_BEEN_DISABLED
-#  pull_request:
-#    types: [ready_for_review, opened, reopened, synchronize]
-#    branches:
-#      - master
+      - master
   # Allows you to run the workflow manually from the Actions tab
   workflow_dispatch:
 
