@@ -12,6 +12,27 @@ on:
   workflow_dispatch:
 
 jobs:
+  deploy-kube-prometheus-stack:
+    name: Install kube prometheus stack
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup gcloud CLI for deploy
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ secrets.DIGDIR_FDK_DEV_AUTODEPLOY }}
+          export_default_credentials: true
+
+      - name: Apply Helm chart kube-prometheus-stack
+        run: |
+          gcloud container clusters get-credentials digdir-fdk-dev --region europe-north1-a --project digdir-fdk-dev
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo update
+          helm install 39.4.0 prometheus-community/kube-prometheus-stack
+
   deploy-telegraf-operator:
     name: Install telegraf-operator
     runs-on: ubuntu-latest
