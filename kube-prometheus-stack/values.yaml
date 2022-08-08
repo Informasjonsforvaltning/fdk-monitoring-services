@@ -5,3 +5,16 @@ grafana:
     annotations:
       ingress.gcp.kubernetes.io/pre-shared-cert: stjerne-fdk-digdir-no-ssl-2,stjerne-staging-fdk-digdir-no-ssl-2
       kubernetes.io/ingress.global-static-ip-name: digdir-fdk-dev-staging-prometheus-v4
+  persistence:
+    enabled: true
+    type: pvc
+    size: 10Gi
+ prometheus:
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: standard
+          resources:
+            requests:
+              storage: 10Gi
