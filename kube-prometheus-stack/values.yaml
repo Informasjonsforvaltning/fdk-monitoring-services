@@ -6,7 +6,7 @@ grafana:
     hosts: []
     annotations:
       ingress.gcp.kubernetes.io/pre-shared-cert: stjerne-fdk-digdir-no-ssl-2,stjerne-staging-fdk-digdir-no-ssl-2
-      kubernetes.io/ingress.global-static-ip-name: digdir-fdk-dev-staging-prometheus-v4
+      kubernetes.io/ingress.global-static-ip-name: digdir-fdk-dev-staging-grafana-v4
   persistence:
     enabled: true
     type: pvc
