@@ -10,11 +10,11 @@ grafana:
     type: pvc
     size: 10Gi
  prometheus:
-  prometheusSpec:
-    storageSpec:
-      volumeClaimTemplate:
-        spec:
-          storageClassName: standard
-          resources:
-            requests:
-              storage: 10Gi
+   prometheusSpec:
+     storageSpec:
+       volumeClaimTemplate:
+         spec:
+           storageClassName: standard
+           resources:
+             requests:
+               storage: 10Gi
